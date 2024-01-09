@@ -1,60 +1,13 @@
-name: Wiederholung Techstarter
+name: TS-Project
 run-name: AWS create resources
-on: [push]
+on:[push]
 jobs:
   Deploy-App:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - name: Check out repository code
+      - run : echo "Deploying the app"
+      - name: Check out repo code
         uses: actions/checkout@v4
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-      # Wir installieren die dependencies (terraform, aws)
-      - id: install-aws-cli
-        uses: unfor19/install-aws-cli-action@v1
-      - name: Check if aws cli is installed
-        run: |
-          aws --version
-      - uses: hashicorp/setup-terraform@v2
-      - run: terraform version
-      # Konfiguriere die AWS CLI
-      - run: mkdir -p ~/.aws/
-      - run: echo "$super_secret" > ~/.aws/credentials
-        env: # Erstelle ein Github Secret AWS_CONFIG!
-          super_secret: ${{ secrets.AWS_CONFIG }}
-      - run: cat ~/.aws/credentials
-      - run: aws configure list-profiles
-      - run: aws s3 ls --region eu-central-1 --profile JasonT
-      # Create terraform
-      - run: terraform -chdir=terraform/ init -backend-config="bucket=${STATE_BUCKET}"
-        env: 
-          STATE_BUCKET: ${{ secrets.TF_BUCKET }}
-      - run: terraform -chdir=terraform/ plan
-      - run: terraform -chdir=terraform/ apply -auto-approve
-      - run: |
-          terraform -chdir=terraform/ output -raw inventory > ansible/inventory
-          cat ansible/inventory
-          tail -n +2 ansible/inventory > ansible/inventory.ini
-          cat ansible/inventory.ini
-        shell: bash
-      - run: |
-          terraform -chdir=terraform/ output -raw private_key > ssh
-          cat ssh
-          tail -n +2 ssh > ssh_key
-          cat ssh_key
-        shell: bash
-      # Setup SSH for ansible
-      - name: Setup SSH 
-        shell: bash
-        run: |
-          mkdir -p /home/runner/.ssh/
-          cp ssh_key /home/runner/.ssh/id_rsa
-          chmod 700 /home/runner/.ssh/id_rsa
-      # Run the ansible playbook
-      - name: Run ansible
-        run: |
-          service ssh status
-          export ANSIBLE_HOST_KEY_CHECKING=False
-          ansible-playbook -vvv --private-key /home/runner/.ssh/id_rsa -u ubuntu -i ansible/inventory.ini ansible/playbooks/playbook.yml --extra-vars "ansible_ssh_private_key_file=/home/runner/.ssh/id_rsa"
+      - name: List file in repo
+        run: ls ${{ github.workspace }}
+        

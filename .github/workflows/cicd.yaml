@@ -38,3 +38,8 @@ jobs:
           cat ansible/inventory
           tail -n +2 ansible/inventory > ansible/inventory.ini
           cat ansible/inventory.ini
+      - run: |
+          terraform -chdir=terraform/ output -raw private_key > ssh
+          cat ssh 
+          tail -n +2 ssh > ssh_key
+          cat ssh_key

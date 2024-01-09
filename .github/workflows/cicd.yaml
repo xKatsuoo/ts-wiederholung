@@ -16,3 +16,7 @@ jobs:
       - name: Check if aws is installed
         run: |
           aws --version
+      - name: install terraform
+        uses: hashicorp/setup-terraform@v2
+      - run: terraform version
+      

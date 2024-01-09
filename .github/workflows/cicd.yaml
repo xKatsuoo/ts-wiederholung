@@ -21,7 +21,7 @@ jobs:
       - run: terraform version
       # Configure AWS CLI
       - run: mkdir -p  ~/.aws/
-      - run: echo '$super_secret' > ~/.aws/credentials
+      - run: echo "$super_secret" > ~/.aws/credentials
         env: 
           super_secret: ${{ secrets.AWS_CONFIG }}
       - run: cat ~/.aws/credentials

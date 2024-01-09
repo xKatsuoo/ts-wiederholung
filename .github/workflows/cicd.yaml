@@ -26,4 +26,4 @@ jobs:
           super_secret: ${{ secrets.AWS_CONFIG }}
       - run: cat ~/.aws/credentials
       - run: aws configure list-profiles
-      - run: aws s3 ls --region us-central-1 --profile JasonT
+      - run: aws s3 ls --region eu-central-1 --profile JasonT

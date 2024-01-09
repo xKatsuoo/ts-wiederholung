@@ -1,0 +1,6 @@
+---
+- name: Konfigurieren der App-Server
+  hosts: app_servers
+  become: yes
+  roles:
+    - flask_app

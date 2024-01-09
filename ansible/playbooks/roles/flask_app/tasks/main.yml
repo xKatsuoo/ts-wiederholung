@@ -1,0 +1,74 @@
+---
+- name: Update all packages to their latest version
+  ansible.builtin.apt:
+    name: "*"
+    state: latest
+    update_cache: yes
+
+- name: install python packages
+  ansible.builtin.apt:
+    pkg:
+    - python3-pip 
+    - python3-flask
+
+- name: ensure folder for systemd unit
+  become_user: ubuntu
+  ansible.builtin.file:
+    path: /home/ubuntu/.config/systemd/user
+    state: directory
+    mode: '0755'
+
+- name: copy latency_check files 
+  become_user: ubuntu
+  copy:
+    src: "files/{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+  - { src: 'latency_check.sh', dest: '/home/ubuntu/latency_check.sh' }
+  - { src: 'latency_check.service', dest: '/home/ubuntu/.config/systemd/user/latency_check.service' }
+
+- name: allow execute on script
+  become_user: ubuntu
+  ansible.builtin.file:
+    path: /home/ubuntu/latency_check.sh
+    owner: ubuntu
+    group: ubuntu
+    mode: '0774'
+
+- name: start latency_check.service
+  become_user: ubuntu
+  ansible.builtin.systemd_service:
+    state: started
+    name: latency_check.service
+    scope: user
+    enabled: yes
+
+- name: ensure folder for flask app
+  become_user: ubuntu
+  ansible.builtin.file:
+    path: /home/ubuntu/myproject
+    state: directory
+    mode: '0755'
+
+- name: Download flask app
+  become_user: ubuntu
+  ansible.builtin.get_url:
+    url: "{{ item.url }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+  with_items: 
+    - { url: 'https://raw.githubusercontent.com/martindubb/wiederholung/main/myproject/app.py', dest: '/home/ubuntu/myproject/app.py', mode: '0755' }
+    - { url: 'https://raw.githubusercontent.com/martindubb/wiederholung/main/myproject/requirements.txt', dest: '/home/ubuntu/myproject/requirements.txt', mode: '0644' }
+
+- name: Install specified python requirements
+  become_user: ubuntu
+  ansible.builtin.pip:
+    requirements: /home/ubuntu/myproject/requirements.txt
+
+- name: start flask app
+  become_user: ubuntu
+  shell: |
+    nohup flask run --host 0.0.0.0 &
+    echo $! > /home/ubuntu/.flaskpid
+  args:
+    chdir: /home/ubuntu/myproject

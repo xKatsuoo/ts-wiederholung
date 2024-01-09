@@ -1,0 +1,4 @@
+[app_servers]
+%{ for index, addr in ip_addrs ~}
+app${index} ansible_host="${addr}"
+%{ endfor ~}

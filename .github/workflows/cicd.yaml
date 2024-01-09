@@ -1,6 +1,6 @@
 name: TS-Project
 run-name: AWS create resources
-on:[push]
+on: [push]
 jobs:
   Deploy-App:
     runs-on: ubuntu-latest

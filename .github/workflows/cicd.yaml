@@ -46,4 +46,7 @@ jobs:
           mkdir -p /home/runner/.ssh
           cp ssh_key /home/runner/.ssh/id_rsa
           chmod 700 /home/runner/.ssh/id_rsa
-      
+      - run: | 
+          service ssh status
+          export ANSIBLE_HOST_KEY_CHECKING=False
+          ansible-playbook -vvv --private-key /home/runner/.ssh/id_rsa -u ubuntu -i ansible/inventory.ini --extra-vars "ansible_ssh_private_key_file=/home/runner/.ssh/id_rsa"

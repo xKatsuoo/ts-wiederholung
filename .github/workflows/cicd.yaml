@@ -26,7 +26,7 @@ jobs:
           super_secret: ${{ secrets.AWS_CONFIG }}
       - run: cat ~/.aws/credentials
       - run: aws configure list-profiles
-      - run: aws s3 ls --region eu-central-1 --profile techstarter
+      - run: aws s3 ls --region eu-central-1 --profile JasonT
       # Create terraform
       - run: terraform -chdir=terraform/ init -backend-config="bucket=${STATE_BUCKET}"
         env: 

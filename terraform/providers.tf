@@ -9,6 +9,6 @@ terraform {
 }
 
 provider "aws" {
-  profile = "techstarter"
+  profile = "JasonT"
   region  = "eu-central-1"
 }

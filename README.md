@@ -23,4 +23,3 @@ aws_session_token=GAAAANZVIELTEXT
 
 Name: TF_BUCKET
 Secret: BUCKET_NAME
-

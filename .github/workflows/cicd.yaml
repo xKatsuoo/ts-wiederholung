@@ -19,4 +19,11 @@ jobs:
       - name: install terraform
         uses: hashicorp/setup-terraform@v2
       - run: terraform version
-      
+      # Configure AWS CLI
+      - run: mkdir -p  ~/.aws/
+      - run: echo '$super_secret' > ~/.aws/credentials
+        env: 
+          super_secret: ${{ secrets.AWS_CONFIG }}
+      - run: cat ~/.aws/credentials
+      - run: aws configure list-profiles
+      - run: aws s3 ls --region us-central-1 --profile JasonT

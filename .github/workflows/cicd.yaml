@@ -28,7 +28,7 @@ jobs:
       - run: aws configure list-profiles
       - run: aws s3 ls --region eu-central-1 --profile JasonT
       # Terraform stuff :)
-      - run: echo "${STATE_BUCKET}" && terraform -chdir=terraform/ init -backend-config="bucket${STATE_BUCKET}"
+      - run: echo "${STATE_BUCKET}" && terraform -chdir=terraform/ init -backend-config="bucket=${STATE_BUCKET}"
         env:
           STATE_BUCKET: ${{ secrets.TF_BUCKET }}
       - run: terraform -chdir=terraform/ plan 
